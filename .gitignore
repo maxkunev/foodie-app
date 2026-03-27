@@ -1,0 +1,11 @@
+#Enviroment
+venv/
+env/
+
+#Data and medoa
+db.sqlite3
+media/
+
+#Cache
+__pycache__/
+*.pyc
