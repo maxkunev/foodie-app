@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %} {{ user_profile.user|capfirst }} profile {% endblock title %}
+
+{% block page_header %} <h3> {{ user_profile.user|capfirst }}'s profile </h3> {% endblock page_header %}
+
+{% block content1 %}
+
+<style>
+    .max-width-class-ava:{
+        max-width: 400px;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="card shadow-sm p-4 text-center mx-auto max-width-class-ava">
+        
+        {% if user_profile.profile_photo %}
+            <img src="{{ user_profile.profile_photo.url }}"
+             alt="profile-photo"
+             class="rounded-circle mx-auto d-block mb-3 border"
+             width="200" height="200">
+        {% else %}
+            <img src="{% static 'images/default_user.jpg' %}"
+             alt="profile-photo"
+             class="rounded-circle mx-auto d-block mb-3 border"
+             width="200" height="200">
+        {% endif %}
+        
+        <p class="fw-bold fs-4 mb-1">
+            {{ user_profile.user }}
+        </p>
+        
+        <p class="text-muted mb-3">
+            {{ user_profile.bio }}
+        </p>
+        
+        <p class="text-secondary small">
+            Joined: {{ user_profile.date_created }}
+        </p>
+        
+    </div>
+</div>
+
+{% endblock content1 %}
+

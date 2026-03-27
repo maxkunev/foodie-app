@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %} {{ "Feedback" }} {% endblock title %}
+
+{% block content1 %}
+
+    {% if visits %}
+        <p> You have visited this page {{ visits }} time{{ visits|pluralize }}</p>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Sumbit</button>
+    </form>
+
+{% endblock content1 %}
+

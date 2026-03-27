@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block title %} Add Recipe {% endblock title %}
+
+{% block page_header %}
+    <h3>Add a new Recipe {% if category %} to {{ category.name }} {% endif %} </h3>
+{% endblock page_header %}
+
+{% block content1 %}
+    <div>
+        {% comment %} <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Save recipe</button>
+        </form> {% endcomment %}
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            {% bootstrap_button button_type="submit" content="Save recipe" %}
+        </form>
+    </div>
+{% endblock content1 %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block content1 %}
+
+<style>
+    .alert-test-message{
+        z-index: 1055;
+    }
+</style>
+
+<script>
+    setTimeout(function() {
+        let alertNode = document.querySelector('.alert-test-message');
+        if (alertNode) {
+            let bsAlert = new bootstrap.Alert(alertNode.querySelector('.alert'));
+            bsAlert.close();
+        }
+    }, 3000);
+</script>
+
+    {% if messages %}
+        <div class="messages position-fixed top-0 end-0 p-3 alert-test-message">
+            {% for message in messages %}
+                <p class="alert alert-{{ message.tags }} alert-dismissible fade show shadow">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if recipes %}
+        <ul>
+            {% for recipe in recipes %}
+                <li> 
+                    <a href="{% url "sandbox:recipe_detail" recipe.id %}"> {{ recipe.name }} </a> 
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No foods found</p>
+    {% endif %}
+
+{% endblock content1 %}
+

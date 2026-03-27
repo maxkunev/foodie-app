@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %} Recipes {% endblock title %}
+
+{% block page_header %} <h3> Recipes search under {{ query }}</h3> {% endblock page_header %}
+
+{% block content1 %}
+
+<style>
+        .recipe-img {
+            width: 100%;
+            height: auto;
+        }
+
+        @media (min-width: 768px) {
+            .recipe-img {
+                width: 160px;
+                height: 160px;
+                object-fit: cover;
+            }
+        }
+</style>
+
+    <div class="mt-4">
+        {% if recipes %}
+            {% for recipe in recipes %}
+           <div class="card mb-3">
+                <h6 class="card-header"> {{ recipe.name }}, <i>added: {{ recipe.date_added | date:"M d, Y" }} </i></h6>
+                <div class="card-body">
+                    <div class="row flex-column flex-md-row">
+                    {% if recipe.image %}
+                        <div class="col-auto mb-3 mb-md-0">
+                            <img src="{{ recipe.image.url }}" width=120 height=120 alt="{{ recipe.name }}" class="img-thumbnail recipe-img">
+                        </div>
+                    {% endif %}
+                    <div class="col">
+                        <p> Description: </p>
+                        {{ recipe.description }}
+                    </div>
+                    </div>
+                    <hr>
+                    <div class="row align-items-center mt-3">
+                        <div class="col">
+                            <small><a class="text-decoration-none" href="{% url "recipes:recipe_details" recipe.id %}">View Recipe detail</a></small>
+                        </div>
+                        <div class="col-auto">
+                            <small>Created by:
+                                
+                                {% if recipe.user.profile.profile_photo %}
+                                    <img src="{{ recipe.user.profile.profile_photo.url }}" alt="profile-photo" class="rounded-circle" width="20" height="20">
+                                {% endif %}
+                                
+                                {% if recipe.user.profile %} 
+                                    <a class="text-decoration-none" href="{% url "recipes:recipe_details" recipe.id %}"> {{ recipe.user.username }} </a> 
+                                {% else %} 
+                                    Anonymous 
+                                {% endif %} 
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        {% else %}
+        <h5>No results</h5>
+        {% endif %}
+    </div>
+{% endblock content1 %}
+

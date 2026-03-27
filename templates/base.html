@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="foo,bar"/>
+    <meta name="description" content="foo"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} DjangoProject {% endblock title %} </title>
+    {% load django_bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
+
+<body>
+
+<style>
+    .alert-test-message{
+        z-index: 1055;
+    }
+    .btn-twitch {
+        background-color: #9146FF;
+        border-color: #9146FF;
+        color: white;
+    }
+    .btn-twitch:hover {
+        background-color: #772ce8;
+        border-color: #772ce8;
+        color: white;
+    }
+</style>
+
+<script>
+    setTimeout(function() {
+        let alertNode = document.querySelector('.alert-test-message');
+        if (alertNode) {
+            let bsAlert = new bootstrap.Alert(alertNode.querySelector('.alert'));
+            bsAlert.close();
+        }
+    }, 3000);
+</script>
+
+    {% if messages %}
+        <div class="messages position-fixed top-0 end-0 p-3 alert-test-message">
+            {% for message in messages %}
+                <p class="alert alert-{{ message.tags }} alert-dismissible fade show shadow">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url "foodie_app:foodie_app_home" %}">Foodie</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav w-100 d-flex">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link active text-primary" aria-current="page" href="{% url "foodie_app:add_recipe_no_genre" %}">Add Recipe</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-primary" aria-current="page" href="{% url "recipes:recipes_home" %}">All Recipes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-primary" aria-current="page" href="{% url "recipes:my_recipes" %}">My Recipes</a>
+                    </li>
+                    <li class="nav-item ms-lg-auto">
+                        <form class="d-flex" action="{% url "recipes:search_results" %}" method="get">
+                            {{ search_form.query }}
+                            <button type="submit" class="btn btn-outline-success my-2 my-sm-0">
+                                search
+                            </button>
+                        </form>
+                    </li>
+                    <li class="nav-item mt-2 mt-lg-0 ms-lg-2">
+                            <button class="btn btn-twitch btn-sm text-white d-flex align-items-center px-2 h-100">
+                                <a class="text-white text-decoration-none fs-6" href={% url "recipes:favorite_recipes" %}>🤍My favorite</a>
+                            </button>
+                    </li>
+                    <li class="nav-item">
+                        <span class="nav-link">Hello, {% if request.user.profile.profile_photo %} 
+                            <a class="text-decoration-none" href="{% url "accounts:edit_user_profile" %}">
+                                <img src="{{ request.user.profile.profile_photo.url }}" width=20 height=20 alt="profile-photo" class="rounded-circle">
+                            </a>
+                                {% endif %} 
+                            <a href="{% url "accounts:edit_user_profile" %}" class="text-primary text-decoration-none"> 
+                                    {{ user.username }} 
+                            </a> 
+                        </span>
+                    </li>
+                {% else %}
+                    <li class="nav-item ms-lg-auto">
+                        <a class="nav-link active" aria-current="page" href="{% url "accounts:register" %}">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url "accounts:login" %}"> Login </a>
+                    </li>
+                {% endif %}
+            </ul>
+                {% if user.is_authenticated %}
+                        <div>
+                            <form action="{% url "accounts:logout" %}" method="post" class="d-flex">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-dark btn-sm">Logout</button>
+                            </form>
+                        </div>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    <main class="container-fluid py-2 px-5">
+        <div class="pb-2 mb-3 border-bottom">
+            {% block page_header %}
+            {% endblock page_header %}
+        </div>
+        <div>
+            {% block content1 %}
+            {% endblock content1 %}
+        </div>
+    </main>
+    <div>
+        <hr>
+        <footer>
+            <p class="text-center text-body-secondary">© 2029 Foodie – All rights reserved</p>
+        </footer>
+    </div>
+
+</body>
+
+</html>

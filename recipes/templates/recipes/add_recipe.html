@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %} Add Recipe {% endblock title %}
+
+{% block page_header %}
+    Add a new Recipe {% if category %} to {{ category.name }} {% endif %} 
+{% endblock page_header %}
+
+{% block content1 %}
+    <div>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Save recipe</button>
+        </form>
+    </div>
+{% endblock content1 %}

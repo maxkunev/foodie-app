@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block title %} {{ recipe.name }} {% endblock title %}
+
+{% block content1 %}
+
+<div class="container mt-4">
+    <h3>Edit recipe {{ recipe.name }}</h3>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="Submit" class="btn btn-success">Edit</button>
+        <a class="btn btn-warning text-decoration-none" href="{% url "recipes:my_recipes" %}">Cancel</a>
+    </form>
+</div>
+
+{% endblock content1 %}
+
