@@ -6,6 +6,7 @@ from recipes.models import Recipe
 # Create your views here.
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from recipes.utils import get_pagination
 
 def index(request):
     categories = Category.objects.all()
@@ -15,8 +16,13 @@ def index(request):
 def recipes(request, category_id):
     recipes = Recipe.objects.filter(category = category_id)
     category = Category.objects.get(pk = category_id)
-    context = {"recipes": recipes,
-               "category": category}
+    
+    page_number = request.GET.get("page")
+    page_obj, window = get_pagination(recipes, page_number)
+
+    
+    context = {"recipes": page_obj, "category": category, "result": window}
+    
     return render(request, "foodie_app/recipes.html", context)
 
 @login_required
@@ -29,6 +35,10 @@ def add_category(request):
             messages.success(request, "Category added!")
             return redirect("foodie_app:foodie_app_home")
         else:
+            messages.warning(request, "Category already exists!")
+            context = {
+                'form': form
+            }
             return render(request, "foodie_app/add_category.html", context)
         
     else:
@@ -41,13 +51,19 @@ def add_category(request):
 def add_recipe(request):
     new_recipe = None
     if request.method == "POST":
-        form = RecipeForm(request.POST, request.FILES)
+        form = RecipeForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
             new_recipe = form.save(commit=False)
             new_recipe.user=request.user
             new_recipe.save()
             messages.success(request, "Recipe added!")
             return redirect("recipes:recipes_home")
+        else:
+            messages.warning(request, "We couldn't save the recipe. Please check that you filled out the form correctly. :/")
+            context = {
+                'form': form
+            }
+            return render(request, "foodie_app/add_recipe.html", context)
     
     else:
         form = RecipeForm()
@@ -65,13 +81,19 @@ def add_recipe_genre(request, category_id=None):
         initial_data = {"category": category}
     
     if request.method == 'POST':
-        form = RecipeForm(request.POST, request.FILES, initial=initial_data)
+        form = RecipeForm(request.POST, request.FILES, initial=initial_data, user=request.user)
         if form.is_valid():
             new_recipe = form.save(commit=False)
-            new_recipe.user = request.user
+            new_recipe.user=request.user
             new_recipe.save()
             messages.success(request, "Recipe added!")
-            return redirect('foodie_app:recipes_category', category_id = new_recipe.category.id)
+            return redirect("recipes:recipes_home")
+        else:
+            messages.warning(request, "We couldn't save the recipe. Please check that you filled out the form correctly. :/")
+            context = {
+                'form': form
+            }
+            return render(request, "foodie_app/add_recipe.html", context)
     else:
         form = RecipeForm(initial=initial_data)
     

@@ -27,44 +27,75 @@
     {% endif %}
 
     <div>
-        {% for recipe in recipes %}
-            <div class="card mb-3">
-                <h6 class="card-header"> {{ recipe.name }}, <i>added: {{ recipe.date_added | date:"M d, Y" }} </i></h6>
-                <div class="card-body">
-                    <div class="row flex-column flex-md-row">
-                    {% if recipe.image %}
-                        <div class="col-auto mb-3 mb-md-0">
-                            <img src="{{ recipe.image.url }}" width=120 height=120 alt="{{ recipe.name }}" class="img-thumbnail recipe-img">
-                        </div>
-                    {% endif %}
-                    <div class="col">
-                        <p> Description: </p>
-                        {{ recipe.description }}
-                    </div>
-                    </div>
-                    <hr>
-                    <div class="row align-items-center mt-3">
+        {% if recipes %}
+            {% for recipe in recipes %}
+                <div class="card mb-3">
+                    <h6 class="card-header"> {{ recipe.name }}, <i>added: {{ recipe.date_added | date:"M d, Y" }} </i></h6>
+                    <div class="card-body">
+                        <div class="row flex-column flex-md-row">
+                        {% if recipe.image %}
+                            <div class="col-auto mb-3 mb-md-0">
+                                <img src="{{ recipe.image.url }}" width=120 height=120 alt="{{ recipe.name }}" class="img-thumbnail recipe-img">
+                            </div>
+                        {% endif %}
                         <div class="col">
-                            <small><a class="text-decoration-none" href="{% url "recipes:recipe_details" recipe.id %}">View Recipe detail</a></small>
+                            <p> Description: </p>
+                            {{ recipe.description }}
                         </div>
-                        <div class="col-auto">
-                            <small>Created by:
-                                
-                                {% if recipe.user.profile.profile_photo %}
-                                    <img src="{{ recipe.user.profile.profile_photo.url }}" alt="profile-photo" class="rounded-circle" width="20" height="20">
-                                {% endif %}
-                                
-                                {% if recipe.user.profile %} 
-                                    <a class="text-decoration-none" href="{% url "recipes:public_profile" recipe.user.id %}"> {{ recipe.user.username }} </a> 
-                                {% else %} 
-                                    Anonymous 
-                                {% endif %}
-                            </small>
+                        </div>
+                        <hr>
+                        <div class="row align-items-center mt-3">
+                            <div class="col">
+                                <small><a class="text-decoration-none" href="{% url "recipes:recipe_details" recipe.id %}">View Recipe detail</a></small>
+                            </div>
+                            <div class="col-auto">
+                                <small>Created by:
+                                    
+                                    {% if recipe.user.profile.profile_photo %}
+                                        <img src="{{ recipe.user.profile.profile_photo.url }}" alt="profile-photo" class="rounded-circle" width="20" height="20">
+                                    {% endif %}
+                                    
+                                    {% if recipe.user.profile %} 
+                                        <a class="text-decoration-none" href="{% url "recipes:public_profile" recipe.user.id %}"> {{ recipe.user.username }} </a> 
+                                    {% else %} 
+                                        Anonymous 
+                                    {% endif %}
+                                </small>
+                            </div>
                         </div>
                     </div>
                 </div>
+            {% endfor %}
+            <div class="paginator">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+
+                        {% if recipes.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?page={{ recipes.previous_page_number }}">Previous</a></li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                        {% endif %}
+
+                        {% for res in result %}
+                            {% if res == recipes.number %}
+                                <li class="page-item active"><a class="page-link"> {{ res }} </a></li>
+                            {% else %}
+                                <li class="page-item"><a class="page-link" href="?page={{ res }}"> {{ res }} </a></li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if recipes.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ recipes.next_page_number }}">Next</a></li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">Next</span></li>
+                        {% endif %}
+                    </ul>
+                </nav>
             </div>
-        {% endfor %}
+        {% else %}
+                <h3>There is no recipes under {{ category.name }} :/</h3>
+        {% endif %}
+
     </div>
 
 {% endblock content1 %}

@@ -61,6 +61,32 @@
                 </div>
             </div>
         {% endfor %}
+        <div class="paginator">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+
+                    {% if recipes.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ recipes.previous_page_number }}{% if query %}&query={{ query }}{% endif %}%">Previous</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                    {% endif %}
+
+                    {% for res in result %}
+                        {% if res == recipes.number %}
+                            <li class="page-item active"><a class="page-link"> {{ res }} </a></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link" href="?page={{ res }}{% if query %}&query={{ query }}{% endif %}"> {{ res }} </a></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if recipes.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ recipes.next_page_number }}{% if query %}&query={{ query }}{% endif %}">Next</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">Next</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
         {% else %}
         <h5>No results</h5>
         {% endif %}

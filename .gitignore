@@ -9,3 +9,11 @@ media/
 #Cache
 __pycache__/
 *.pyc
+
+# Secrets and environment variables
+.env
+.env.*
+
+# Collected static 
+staticfiles/
+static/

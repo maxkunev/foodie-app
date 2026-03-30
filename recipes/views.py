@@ -1,8 +1,10 @@
 from django.http import HttpResponseForbidden
 from django.shortcuts import redirect, render, get_object_or_404
 from django.shortcuts import HttpResponse
+from django.core.paginator import Paginator
 
 from recipes.serializers import RecipeReadSerializer, RecipeWriteSerializer
+from recipes.utils import get_pagination
 # Create your views here.
 from .models import Recipe
 from django.db.models import Q
@@ -19,7 +21,12 @@ from django.contrib.auth.decorators import login_required
 def recipes(request):
     # recipes = Recipe.objects.filter(category__name__iexact = "soup")
     recipes = Recipe.objects.all()
-    context = {"recipes": recipes}
+    
+    page_number = request.GET.get("page")
+    page_obj, window = get_pagination(recipes, page_number)
+
+    
+    context = {"recipes": page_obj, "result": window}
     return render(request, "recipes/recipes.html", context)
 
 def recipe_detail(request, recipe_id):
@@ -43,26 +50,22 @@ def recipe_detail(request, recipe_id):
     return render(request, "recipes/recipe.html", context)
 
 def search_results(request):
-    query = request.GET.get('query', '')
+    query = request.GET.get('query', '').strip()
     
     results = Recipe.objects.filter(
         Q(name__icontains=query) | 
         Q(description__icontains=query) | 
         Q(ingredients__icontains=query) | 
-        Q(category__name__icontains=query)) if query else []
-    
-    seen_ids = set()
-    unique_results = []
+        Q(category__name__icontains=query)).distinct() if query else []
 
-    for result in results:
-        if result.id not in seen_ids:
-            unique_results.append(result)
-            seen_ids.add(result.id)
             
+    page_number = request.GET.get("page")
+    page_obj, window = get_pagination(results, page_number)
     
     context={
-        "recipes":unique_results, 
+        "recipes":page_obj, 
         "query":query,
+        "result": window
         }
     return render(request, "recipes/search_results.html", context)
 
@@ -118,9 +121,13 @@ def edit_recipe(request, recipe_id):
 @login_required
 def my_recipes(request):
     recipes = request.user.recipes.all()
-    context = {
-        "recipes":recipes
-    }
+
+    page_number = request.GET.get("page")
+    page_obj, window = get_pagination(recipes, page_number)
+
+    
+    context = {"recipes": page_obj, "result": window}
+    
     return render(request, "recipes/my_recipes.html", context)
 
 

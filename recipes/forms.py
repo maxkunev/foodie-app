@@ -9,3 +9,4 @@ class SearchForm(forms.Form):
                             "placeholder":"Search recipes...",
                             "class":"form-control mr-sm-2"
                     }))
+    

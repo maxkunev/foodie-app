@@ -43,15 +43,15 @@
                             <div class="col">
                                 <small><a class="text-decoration-none" href="{% url "recipes:recipe_details" recipe.id %}">View Recipe detail</a></small>
                             </div>
-                            <div class="col-auto">
+                            <div class="col-auto">                                    
                                 <small>Created by:
-                                    
+                            
                                     {% if recipe.user.profile.profile_photo %}
                                         <img src="{{ recipe.user.profile.profile_photo.url }}" alt="profile-photo" class="rounded-circle" width="20" height="20">
                                     {% endif %}
                                     
                                     {% if recipe.user.profile %} 
-                                        <a class="text-decoration-none" href="{% url "recipes:recipe_details" recipe.id %}"> {{ recipe.user.username }} </a> 
+                                        <a class="text-decoration-none" href="{% url "recipes:public_profile" recipe.user.id %}"> {{ recipe.user.username }} </a> 
                                     {% else %} 
                                         Anonymous 
                                     {% endif %} 
