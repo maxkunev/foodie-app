@@ -8,14 +8,14 @@ A Django-based web application for managing and exploring recipes, featuring bro
 
 ## ✨ Features
 
-- 📖 Browse recipes
-- 🔎 Search functionality
-- 🏷️ Category filtering
-- 📄 Custom pagination with improved UX logic
-- 💬 Comments system
-- 👤 User registration and authentication
-- 🖼️ Profile photo upload
-- ✅ Improved form validation
+- Browse recipes
+- Search functionality
+- Category filtering
+- Custom pagination with improved UX logic
+- Comments system
+- User registration and authentication
+- Profile photo upload
+- Improved form validation
 
 ---
 
