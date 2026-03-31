@@ -106,7 +106,3 @@ python manage.py runserver
 
 ---
 
-## 💡 Note
-
-This project is based on a Packt course but has been significantly enhanced with improved architecture, new features, and bug fixes. It reflects my current backend development skills and approach to writing clean, maintainable Django code.
-
