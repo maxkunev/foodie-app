@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block title %} {{ category.name }} {% endblock title %}
 
 {% load django_bootstrap5 %}
@@ -21,7 +23,7 @@
             }
         }
     </style>
-    
+
     {% if user.is_authenticated %}
         <a class="text-decoration-none" href="{% url "foodie_app:add_recipe_with_genre" category.id %}"> Add recipe </a>
     {% endif %}
@@ -37,6 +39,10 @@
                             <div class="col-auto mb-3 mb-md-0">
                                 <img src="{{ recipe.image.url }}" width=120 height=120 alt="{{ recipe.name }}" class="img-thumbnail recipe-img">
                             </div>
+                        {% else %}
+                            <div class="col-auto mb-3 mb-md-0">
+                                <img src="{% static 'images/default_recipe.jpg' %}" width=120 height=120 alt="{{ recipe.name }}" class="img-thumbnail recipe-img">
+                            </div>
                         {% endif %}
                         <div class="col">
                             <p> Description: </p>
@@ -50,15 +56,15 @@
                             </div>
                             <div class="col-auto">
                                 <small>Created by:
-                                    
+
                                     {% if recipe.user.profile.profile_photo %}
                                         <img src="{{ recipe.user.profile.profile_photo.url }}" alt="profile-photo" class="rounded-circle" width="20" height="20">
                                     {% endif %}
-                                    
-                                    {% if recipe.user.profile %} 
-                                        <a class="text-decoration-none" href="{% url "recipes:public_profile" recipe.user.id %}"> {{ recipe.user.username }} </a> 
-                                    {% else %} 
-                                        Anonymous 
+
+                                    {% if recipe.user.profile %}
+                                        <a class="text-decoration-none" href="{% url "recipes:public_profile" recipe.user.id %}"> {{ recipe.user.username }} </a>
+                                    {% else %}
+                                        Anonymous
                                     {% endif %}
                                 </small>
                             </div>

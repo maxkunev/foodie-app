@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block title %} Recipes {% endblock title %}
 
 {% block page_header %} <h3> Recipes search under {{ query }}</h3> {% endblock page_header %}
@@ -29,9 +31,13 @@
                 <div class="card-body">
                     <div class="row flex-column flex-md-row">
                     {% if recipe.image %}
-                        <div class="col-auto mb-3 mb-md-0">
-                            <img src="{{ recipe.image.url }}" width=120 height=120 alt="{{ recipe.name }}" class="img-thumbnail recipe-img">
-                        </div>
+                            <div class="col-auto mb-3 mb-md-0">
+                                <img src="{{ recipe.image.url }}" width=120 height=120 alt="{{ recipe.name }}" class="img-thumbnail recipe-img">
+                            </div>
+                    {% else %}
+                            <div class="col-auto mb-3 mb-md-0">
+                                <img src="{% static 'images/default_recipe.jpg' %}" width=120 height=120 alt="{{ recipe.name }}" class="img-thumbnail recipe-img">
+                            </div>
                     {% endif %}
                     <div class="col">
                         <p> Description: </p>
@@ -45,16 +51,18 @@
                         </div>
                         <div class="col-auto">
                             <small>Created by:
-                                
+
                                 {% if recipe.user.profile.profile_photo %}
-                                    <img src="{{ recipe.user.profile.profile_photo.url }}" alt="profile-photo" class="rounded-circle" width="20" height="20">
+                                        <img src="{{ recipe.user.profile.profile_photo.url }}" alt="profile-photo" class="rounded-circle" width="20" height="20">
+                                {% else %}
+                                        <img src="{% static 'images/default_user.jpg' %}" alt="profile-photo" class="rounded-circle" width="20" height="20">
                                 {% endif %}
-                                
-                                {% if recipe.user.profile %} 
-                                    <a class="text-decoration-none" href="{% url "recipes:recipe_details" recipe.id %}"> {{ recipe.user.username }} </a> 
-                                {% else %} 
-                                    Anonymous 
-                                {% endif %} 
+
+                                {% if recipe.user.profile %}
+                                    <a class="text-decoration-none" href="{% url "recipes:recipe_details" recipe.id %}"> {{ recipe.user.username }} </a>
+                                {% else %}
+                                    Anonymous
+                                {% endif %}
                             </small>
                         </div>
                     </div>

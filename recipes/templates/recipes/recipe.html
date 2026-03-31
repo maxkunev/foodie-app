@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+
+{% load static %}
+
 {% load django_bootstrap5 %}
 {% block title %} {{ recipe.name }} {% endblock title %}
 
@@ -18,15 +21,19 @@
 </style>
 
         <div class="card mb-3">
-            <h5 class="card-header d-flex align-items-center"> 
-                {{ recipe.name }} 
+            <h5 class="card-header d-flex align-items-center">
+                {{ recipe.name }}
             </h5>
-       
+
             <div class="card-body">
                 <div class="row align-items-start">
                     {% if recipe.image %}
                         <div class="col-md-3">
-                            <img src="{{ recipe.image.url }}" alt="{{ recipe.name }}" class="img-fluid img-thumbnail" width="800" height="600"  >
+                            <img src="{{ recipe.image.url }}" alt="{{ recipe.name }}" class="img-fluid img-thumbnail" width="800" height="600">
+                        </div>
+                    {% else %}
+                        <div class="col-md-3">
+                            <img src="{% static 'images/default_recipe.jpg' %}" alt="{{ recipe.name }}" class="img-fluid img-thumbnail" width="800" height="600">
                         </div>
                     {% endif %}
                     <div class="col-md-9">
@@ -43,15 +50,17 @@
                 <small>Created by:
                         {% if recipe.user.profile.profile_photo %}
                             <img src="{{ recipe.user.profile.profile_photo.url }}" alt="profile-photo" class="rounded-circle" width="20" height="20">
+                        {% else %}
+                            <img src="{% static 'images/default_user.jpg' %}" alt="profile-photo" class="rounded-circle" width="20" height="20">
                         {% endif %}
-                                
-                        {% if recipe.user.profile %} 
-                            <a class="text-decoration-none" href="{% url "recipes:public_profile" recipe.user.id %}"> {{ recipe.user.username }} </a> 
-                        {% else %} 
-                            Anonymous 
+
+                        {% if recipe.user.profile %}
+                            <a class="text-decoration-none" href="{% url "recipes:public_profile" recipe.user.id %}"> {{ recipe.user.username }} </a>
+                        {% else %}
+                            Anonymous
                         {% endif %}
                 </small>
-                    
+
                 <form action={% url "recipes:toggle_favorite" recipe.id %} method="post" class="d-inline float-end">
                     {% csrf_token %}
                     {% if user in recipe.favorited_by.all %}
@@ -60,7 +69,7 @@
                         <button type="Submit" class="btn btn-twitch btn-sm text-white fs-5">🤍Favorite</button>
                     {% endif %}
                 </form>
-                
+
             </div>
         </div>
     </div>
@@ -95,7 +104,9 @@
             <div class="border rounded p-2 mb-2 bg-light">
                  <div class="d-flex align-items-center mb-1">
                     {% if comment.user.profile.profile_photo %}
-                        <img src="{{ comment.user.profile.profile_photo.url }}" alt="profile-photo" class="rounded-circle me-2" width="20" height="20">
+                        <img src="{{ comment.user.profile.profile_photo.url }}" alt="profile-photo" class="rounded-circle" width="20" height="20">
+                    {% else %}
+                        <img src="{% static 'images/default_user.jpg' %}" alt="profile-photo" class="rounded-circle" width="20" height="20">
                     {% endif %}
                     <div>
                         <div class="d-flex align-items-center">
@@ -105,10 +116,10 @@
                             <p class="mb-0 text-muted">Added on {{ comment.date_added|date:"F d, Y" }} at {{ comment.date_added|time:"H:i"  }} </p>
                         </div>
                     </div>
-                </div> 
+                </div>
                     <p class="mb-0 text-muted">
                             {{ comment.text }}
-                    </p> 
+                    </p>
             </div>
         {% empty %}
             <hr>
