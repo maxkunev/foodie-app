@@ -1,4 +1,4 @@
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.shortcuts import HttpResponse
 from django.core.paginator import Paginator
@@ -49,6 +49,24 @@ def recipe_detail(request, recipe_id):
     context = {"recipe": recipe, "comments": comments, "comment_form": comment_form}
     return render(request, "recipes/recipe.html", context)
 
+@login_required
+def toggle_favorite(request, recipe_id):
+    recipe = get_object_or_404(Recipe, pk=recipe_id)
+    
+    if request.user in recipe.favorited_by.all():
+        recipe.favorited_by.remove(request.user)
+        user_recip_is_favorite = False
+    else:
+        recipe.favorited_by.add(request.user) 
+        user_recip_is_favorite = True
+    
+    if request.headers.get("Accept") == "application/json":
+        return JsonResponse({
+            "user_recipe_is_favorite": user_recip_is_favorite
+            })
+    else:
+        return redirect("recipes:recipe_details", recipe_id)
+
 def search_results(request):
     query = request.GET.get('query', '').strip()
     
@@ -69,16 +87,6 @@ def search_results(request):
         }
     return render(request, "recipes/search_results.html", context)
 
-@login_required
-def toggle_favorite(request, recipe_id):
-    recipe = get_object_or_404(Recipe, pk=recipe_id)
-    
-    if request.user in recipe.favorited_by.all():
-        recipe.favorited_by.remove(request.user)
-    else:
-        recipe.favorited_by.add(request.user) 
-            
-    return redirect("recipes:recipe_details", recipe_id)
 
 @login_required
 def favorite_recipes(request):
