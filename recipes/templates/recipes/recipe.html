@@ -61,7 +61,7 @@
                         {% endif %}
                 </small>
 
-                <form action={% url "recipes:toggle_favorite" recipe.id %} method="post" class="d-inline float-end">
+                <form action={% url "recipes:toggle_favorite" recipe.id %} method="post" class="d-inline float-end ajax-form-feature" data-id="{{ recipe.id }}">
                     {% csrf_token %}
                     {% if user in recipe.favorited_by.all %}
                         <button type="Submit" class="btn btn-warning btn-sm text-black fs-5">🖤Unfavorite</button>
@@ -126,5 +126,6 @@
             <p>No comments</p>
         {% endfor %}
     </div>
+    <script src="{% static 'js/recipe/favorites-ajax.js' %}"></script>
 {% endblock content1 %}
 
