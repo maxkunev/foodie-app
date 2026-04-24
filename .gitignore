@@ -16,4 +16,6 @@ __pycache__/
 
 # Collected static 
 staticfiles/
-static/
+static/*
+!static/images/
+!static/js/
