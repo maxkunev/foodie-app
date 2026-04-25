@@ -4,7 +4,7 @@ favoriteForms.forEach(function(form) {
     form.addEventListener('submit', function(event) {
         event.preventDefault();
         let button = form.querySelector("button");
-        let classlist_origin = button.classList
+        let wasFavorite = button.classList.contains("btn-twitch");
         if (button.classList.contains("btn-twitch")){
             button.classList.remove("btn-twitch", "text-white")
             button.classList.add("btn-warning", "text-black")
@@ -15,6 +15,7 @@ favoriteForms.forEach(function(form) {
             button.classList.add("btn-twitch", "text-white")
             button.innerText = "🤍Favorite";
         }
+        button.disabled = true;
         let url = form.action; 
         let formData = new FormData(form);
         fetch(url, {
@@ -24,8 +25,7 @@ favoriteForms.forEach(function(form) {
         })
         .then(response => {
             if (!response.ok){
-                throw new Error('Something went wrong! Server has trouble.')
-                button.classList = classlist_origin;
+                throw new Error('Something went wrong! Server has trouble.');
             };
             return response.json()
         }) 
@@ -36,8 +36,21 @@ favoriteForms.forEach(function(form) {
             }
             console.log(data)})
         .catch(error => {
+            if (wasFavorite){
+                button.classList.remove("btn-warning", "text-black")
+                button.classList.add("btn-twitch", "text-white")
+                button.innerText = "🤍Favorite";
+            }
+            else{
+                button.classList.remove("btn-twitch", "text-white")
+                button.classList.add("btn-warning", "text-black")
+                button.innerText = "🖤 Unfavorite";
+            }
             console.error("There was an error", error);
-            });
+            })
+        .finally(() => {
+            button.disabled = false;
+        });
         });
     });
 
