@@ -3,6 +3,19 @@ let favoriteForms = document.querySelectorAll(".ajax-form-feature");
 favoriteForms.forEach(function(form) {
     form.addEventListener('submit', function(event) {
         event.preventDefault();
+        let button = form.querySelector("button");
+        let wasFavorite = button.classList.contains("btn-twitch");
+        if (button.classList.contains("btn-twitch")){
+            button.classList.remove("btn-twitch", "text-white")
+            button.classList.add("btn-warning", "text-black")
+            button.innerText = "🖤 Unfavorite";
+        }
+        else{
+            button.classList.remove("btn-warning", "text-black")
+            button.classList.add("btn-twitch", "text-white")
+            button.innerText = "🤍Favorite";
+        }
+        button.disabled = true;
         let url = form.action; 
         let formData = new FormData(form);
         fetch(url, {
@@ -10,21 +23,35 @@ favoriteForms.forEach(function(form) {
             body: formData,
             headers: {"Accept": "application/json"}
         })
-        .then(response => response.json()) 
+        .then(response => {
+            if (!response.ok){
+                throw new Error('Something went wrong! Server has trouble.');
+            };
+            return response.json()
+        }) 
         .then(data => {
             let button = form.querySelector("button");
             if ((data.user_recipe_is_favorite === true)){
-                button.classList.remove("btn-twitch", "text-white")
-                button.classList.add("btn-warning", "text-black")
-                button.innerText = "🖤 Unfavorite";
+                console.log("Favorite added success!")
             }
-            else{
+            console.log(data)})
+        .catch(error => {
+            if (wasFavorite){
                 button.classList.remove("btn-warning", "text-black")
                 button.classList.add("btn-twitch", "text-white")
                 button.innerText = "🤍Favorite";
             }
-            console.log(data);
+            else{
+                button.classList.remove("btn-twitch", "text-white")
+                button.classList.add("btn-warning", "text-black")
+                button.innerText = "🖤 Unfavorite";
+            }
+            console.error("There was an error", error);
+            })
+        .finally(() => {
+            button.disabled = false;
+        });
         });
     });
-});
+
    
