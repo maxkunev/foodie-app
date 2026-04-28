@@ -2,6 +2,8 @@
 
 {% load static %}
 
+{% load recipe_filters %}
+
 {% block title %} My recipes {% endblock title %}
 
 {% block page_header %} <h3> My recipes </h3> {% endblock page_header %}
@@ -27,11 +29,16 @@
         <div class="mt-4">
             {% for recipe in recipes %}
             <div class="card mb-3">
-                    <h6 class="card-header d-flex align-items-center">
-                        {{ recipe.name }},
-                        <i>added: {{ recipe.date_added | date:"M d, Y" }} </i>
-                        <a class="btn btn-outline-success btn-sm text-decoration-none text-black ms-auto" href="{% url "recipes:edit_recipe" recipe.id %}">Edit</a>
-                        <a class="btn btn-outline-danger btn-sm text-decoration-none text-black ms-2" href="{% url "recipes:delete_recipe" recipe.id %}">Delete</a>
+                    <h6 class="card-header d-flex justify-content-between align-items-center"> 
+                        <div>
+                            {{ recipe.name }},
+                            <i class="text-muted">added: {{ recipe.date_added|date:"M d, Y" }}</i>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-1 text-muted small">
+                            <span class="text-danger">♥</span>
+                            <span>{{ recipe.liked_by.count|liked_filter }}</span>
+                        </div>
                     </h6>
                     <div class="card-body">
                         <div class="row flex-column flex-md-row">
