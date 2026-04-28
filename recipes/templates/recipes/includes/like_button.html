@@ -1,0 +1,16 @@
+{% load recipe_filters %}
+
+<form action="{% url "recipes:toggle_liked" recipe.id %}" hx-post="{% url "recipes:toggle_liked" recipe.id %}" hx-target="this" hx-swap="outerHTML" method="post" class="d-inline float-end">
+    {% csrf_token %}
+    {% if user in recipe.liked_by.all %}
+        <div class="d-inline-flex align-items-center gap-1">
+            <span class="text-muted small">{{ recipe.liked_by.count|liked_filter }}</span>
+            <button type="Submit" class="like-button-htmx liked">♥</button>
+        </div>
+    {% else %}
+        <div class="d-inline-flex align-items-center gap-1">
+            <span class="text-muted small">{{ recipe.liked_by.count|liked_filter }}</span>
+            <button type="Submit" class="like-button-htmx">♡</button>
+        </div>
+    {% endif %}
+</form>
