@@ -8,12 +8,12 @@ favoriteForms.forEach(function(form) {
         if (button.classList.contains("btn-twitch")){
             button.classList.remove("btn-twitch", "text-white")
             button.classList.add("btn-warning", "text-black")
-            button.innerText = "🖤 Unfavorite";
+            button.innerHTML = "★<span>Unfavorite</span>";
         }
         else{
             button.classList.remove("btn-warning", "text-black")
             button.classList.add("btn-twitch", "text-white")
-            button.innerText = "🤍Favorite";
+            button.innerHTML = "☆<span>Favorite</span>";
         }
         button.disabled = true;
         let url = form.action; 
@@ -25,7 +25,7 @@ favoriteForms.forEach(function(form) {
         })
         .then(response => {
             if (!response.ok){
-                throw new Error('Something went wrong! Server has trouble.');
+                throw new Error('Something went wrong! Server or client has troubles.');
             };
             return response.json()
         }) 
@@ -39,12 +39,12 @@ favoriteForms.forEach(function(form) {
             if (wasFavorite){
                 button.classList.remove("btn-warning", "text-black")
                 button.classList.add("btn-twitch", "text-white")
-                button.innerText = "🤍Favorite";
+                button.innerHTML = "☆<span>Favorite</span>";
             }
             else{
                 button.classList.remove("btn-twitch", "text-white")
                 button.classList.add("btn-warning", "text-black")
-                button.innerText = "🖤 Unfavorite";
+                button.innerHTML = "★<span>Unfavorite</span>";
             }
             console.error("There was an error", error);
             })
@@ -53,5 +53,4 @@ favoriteForms.forEach(function(form) {
         });
         });
     });
-
-   
+    

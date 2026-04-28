@@ -2,6 +2,7 @@ from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.shortcuts import HttpResponse
 from django.core.paginator import Paginator
+from django.urls import reverse
 
 from recipes.serializers import RecipeReadSerializer, RecipeWriteSerializer
 from recipes.utils import get_pagination
@@ -66,6 +67,28 @@ def toggle_favorite(request, recipe_id):
             })
     else:
         return redirect("recipes:recipe_details", recipe_id)
+
+def toggle_liked(request, recipe_id):
+    if request.user.is_authenticated:
+        recipe = get_object_or_404(Recipe, pk=recipe_id)
+        
+        if request.user in recipe.liked_by.all():
+            recipe.liked_by.remove(request.user)
+        else:
+            recipe.liked_by.add(request.user) 
+        
+        if request.headers.get("HX-Request"):
+            context = {"recipe":recipe}
+            return render(request, "recipes/includes/like_button.html", context)
+                
+        return redirect("recipes:recipe_details", recipe_id)
+    else:
+        if request.headers.get("HX-Request"):
+            response = HttpResponse()
+            response["HX-Redirect"] = reverse('accounts:login')
+            return response
+        else:
+            return redirect(reverse('accounts:login'))
 
 def search_results(request):
     query = request.GET.get('query', '').strip()

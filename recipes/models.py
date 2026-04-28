@@ -16,6 +16,7 @@ class Recipe (models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="recipes")
     image = models.ImageField(upload_to="recipe_images/", null=True, blank=True)
     favorited_by = models.ManyToManyField(User, blank=True, related_name="favorite_recipes")
+    liked_by = models.ManyToManyField(User, blank=True, related_name="liked_recipes")
     
     def __str__(self):
         return self.name
