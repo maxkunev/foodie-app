@@ -21,7 +21,7 @@ from django.contrib.auth.decorators import login_required
 
 def recipes(request):
     # recipes = Recipe.objects.filter(category__name__iexact = "soup")
-    recipes = Recipe.objects.all()
+    recipes = Recipe.objects.with_likes().all()
     
     page_number = request.GET.get("page")
     page_obj, window = get_pagination(recipes, page_number)
@@ -92,29 +92,59 @@ def toggle_liked(request, recipe_id):
 
 def search_results(request):
     query = request.GET.get('query', '').strip()
-    
-    results = Recipe.objects.filter(
+    sort_date = request.GET.get('sort_date', '').strip()
+    sort_likes = request.GET.get('sort_likes', '').strip()
+    sort_category = request.GET.getlist('category', '')
+
+    results = Recipe.objects.with_likes().filter(
         Q(name__icontains=query) | 
         Q(description__icontains=query) | 
         Q(ingredients__icontains=query) | 
-        Q(category__name__icontains=query)).distinct() if query else []
-
+        Q(category__name__icontains=query)).distinct() if query else Recipe.objects.none()
+       
+    sort_list = []
+    
+    if results:
+        if sort_likes:
+            if sort_likes == "Most_liked":
+                sort_list.append("-likes_total")
+            elif sort_likes == "Least_liked":
+                sort_list.append("likes_total")
+        if sort_date:
+            if sort_date == "Newest":
+                sort_list.append("-date_added")
+            elif sort_date == "Oldest":
+                sort_list.append("date_added")
+        
+        if sort_list:
+            results = results.order_by(*sort_list)
             
+    if results:
+        if sort_category:
+            results = results.filter(category__id__in=sort_category)
+        
     page_number = request.GET.get("page")
     page_obj, window = get_pagination(results, page_number)
+    
+    categories = Category.objects.all()
     
     context={
         "recipes":page_obj, 
         "query":query,
-        "result": window
+        "result": window,
+        "sort_date": sort_date,
+        "sort_likes": sort_likes,
+        "categories": categories,
+        "sort_category": sort_category
         }
+    
     return render(request, "recipes/search_results.html", context)
 
 
 @login_required
 def favorite_recipes(request):
     user = request.user
-    recipes = user.favorite_recipes.all()
+    recipes = user.favorite_recipes.with_likes().all()
     context = {"recipes": recipes}
     return render(request, "recipes/favorite_recipes.html", context)
 
@@ -151,7 +181,7 @@ def edit_recipe(request, recipe_id):
 
 @login_required
 def my_recipes(request):
-    recipes = request.user.recipes.all()
+    recipes = request.user.recipes.with_likes().all()
 
     page_number = request.GET.get("page")
     page_obj, window = get_pagination(recipes, page_number)
