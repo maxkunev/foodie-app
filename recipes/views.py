@@ -18,16 +18,56 @@ from rest_framework import viewsets
 
 from django.contrib.auth.decorators import login_required
 
+from django.core.cache import cache
+
 
 def recipes(request):
-    # recipes = Recipe.objects.filter(category__name__iexact = "soup")
-    recipes = Recipe.objects.with_likes().all()
+    recipes = Recipe.objects.with_likes()
     
+    sort_date = request.GET.get('sort_date', '').strip()
+    sort_likes = request.GET.get('sort_likes', '').strip()
+    sort_category = request.GET.getlist('category', '')
+    sort_list=[]
+    
+    if sort_likes:
+        if sort_likes == "Most_liked":
+            sort_list.append("-likes_total")
+        elif sort_likes == "Least_liked":
+            sort_list.append("likes_total")
+            
+    if sort_date:
+        if sort_date == "Newest":
+            sort_list.append("-date_added")
+        elif sort_date == "Oldest":
+            sort_list.append("date_added")
+        
+    if sort_list:
+        recipes = recipes.order_by(*sort_list)
+            
+    if recipes:
+        if sort_category:
+            recipes = recipes.filter(category__id__in=sort_category)
+
+    # recipes = Recipe.objects.filter(category__name__iexact = "soup")
+
+
     page_number = request.GET.get("page")
     page_obj, window = get_pagination(recipes, page_number)
 
+    categories = cache.get('all_categories')
+    if not categories:
+        categories = Category.objects.all()
+        
+        cache.set('all_categories', categories, 86400)
     
-    context = {"recipes": page_obj, "result": window}
+    context = {
+        "recipes": page_obj,
+        "result": window,
+        "categories": categories,
+        "sort_date": sort_date,
+        "sort_likes": sort_likes,
+        "sort_category": sort_category
+        }
     return render(request, "recipes/recipes.html", context)
 
 def recipe_detail(request, recipe_id):
@@ -126,7 +166,11 @@ def search_results(request):
     page_number = request.GET.get("page")
     page_obj, window = get_pagination(results, page_number)
     
-    categories = Category.objects.all()
+    categories = cache.get('all_categories')
+    if not categories:
+        categories = Category.objects.all()
+        
+        cache.set('all_categories', categories, 86400)
     
     context={
         "recipes":page_obj, 

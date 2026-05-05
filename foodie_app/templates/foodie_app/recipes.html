@@ -25,6 +25,24 @@
             }
         }
     </style>
+    <div>
+        <form action="{% url "foodie_app:recipes_category" category.id %}" method="get" class="d-flex flex-wrap align-items-center gap-2" id="recipe-filters">
+
+            <select class="form-select form-select-sm w-auto" name="sort_date">
+                <option value="">--Choose an option--</option>
+                <option value="Newest" {% if sort_date == 'Newest' %}selected{% endif %}>Newest</option>
+                <option value="Oldest" {% if sort_date == 'Oldest' %}selected{% endif %}>Oldest</option>
+            </select>
+
+            <select class="form-select form-select-sm w-auto" name="sort_likes">
+                    <option value="">--Choose an option--</option>
+                    <option value="Most_liked" {% if sort_likes == 'Most_liked' %}selected{% endif %}>Most liked</option>
+                    <option value="Least_liked" {% if sort_likes == 'Least_liked' %}selected{% endif %}>Least liked</option>
+            </select>
+
+                <button class="btn btn-outline-secondary btn-sm">Apply</button>
+        </form>
+    </div>
 
     {% if user.is_authenticated %}
         <a class="text-decoration-none" href="{% url "foodie_app:add_recipe_with_genre" category.id %}"> Add recipe </a>
