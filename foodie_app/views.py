@@ -8,20 +8,53 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from recipes.utils import get_pagination
 
+from django.core.cache import cache
+
 def index(request):
-    categories = Category.objects.all()
+    
+    categories = cache.get('all_categories')
+    if not categories:
+        categories = Category.objects.all()
+        
+        cache.set('all_categories', categories, 86400)
+        
     context = {"categories":categories}
     return render(request, "foodie_app/index.html", context)
 
 def recipes(request, category_id):
-    recipes = Recipe.objects.filter(category = category_id)
-    category = Category.objects.get(pk = category_id)
+    recipes = Recipe.objects.with_likes().filter(category = category_id)
+    category = get_object_or_404(Category, pk = category_id)
+    
+    sort_date = request.GET.get('sort_date', '').strip()
+    sort_likes = request.GET.get('sort_likes', '').strip()
+    sort_list=[]
+    
+    if sort_likes:
+        if sort_likes == "Most_liked":
+            sort_list.append("-likes_total")
+        elif sort_likes == "Least_liked":
+            sort_list.append("likes_total")
+            
+    if sort_date:
+        if sort_date == "Newest":
+            sort_list.append("-date_added")
+        elif sort_date == "Oldest":
+            sort_list.append("date_added")
+        
+    if sort_list:
+        recipes = recipes.order_by(*sort_list)
     
     page_number = request.GET.get("page")
     page_obj, window = get_pagination(recipes, page_number)
 
     
-    context = {"recipes": page_obj, "category": category, "result": window}
+    context = {
+        "recipes": page_obj, 
+        "category": category, 
+        "result": window,
+        "sort_likes": sort_likes,
+        "sort_date": sort_date
+        }
     
     return render(request, "foodie_app/recipes.html", context)
 
