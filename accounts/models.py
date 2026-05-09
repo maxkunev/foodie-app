@@ -9,6 +9,7 @@ class UserProfile(models.Model):
     bio = models.TextField(blank=True, null=True)
     date_created = models.DateTimeField(auto_now_add=True,  null=True)
     profile_photo = models.ImageField(upload_to="profile_photos/", null = True, blank = True)
+    theme_preference = models.BooleanField(blank=True, null=True, default = False)
     
     def __str__(self):
         return self.user.username

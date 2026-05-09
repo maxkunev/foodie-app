@@ -1,10 +1,13 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.http import HttpResponse
 from accounts.forms import UserProfileForm
 # Create your views here.
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
+from accounts.models import UserProfile
 
 def register(request):
     if request.method != "POST":
@@ -33,6 +36,13 @@ def edit_user_profile(request):
         
     return render(request, "registration/edit_profile.html", context={"form": form})
                    
+@login_required
+def toggle_theme(request):
+    if request.method == "POST" and request.user.is_authenticated:
+        request.user.profile.theme_preference = not request.user.profile.theme_preference
+        request.user.profile.save()
 
-        
-        
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+    else:
+        return redirect("foodie_app:foodia_app_home")   
+
