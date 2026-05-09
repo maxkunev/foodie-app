@@ -147,7 +147,7 @@
 
     <div>
         {% for comment in comments %}
-            <div class="border rounded p-2 mb-2 bg-light">
+            <div class="border rounded p-2 mb-2 bg-light bg-body-tertiary">
                  <div class="d-flex align-items-center mb-1">
                     {% if comment.user.profile.profile_photo %}
                         <img src="{{ comment.user.profile.profile_photo.url }}" alt="profile-photo" class="rounded-circle" width="20" height="20">
