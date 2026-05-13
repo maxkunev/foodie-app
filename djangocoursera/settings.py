@@ -37,7 +37,6 @@ ALLOWED_HOSTS = ['adore272.pythonanywhere.com', '127.0.0.1', 'localhost']
 INSTALLED_APPS = [
     #my apps
     'foodie_app',
-    'sandbox',
     'recipes',
     'comments',
     'accounts',
