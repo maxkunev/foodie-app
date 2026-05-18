@@ -30,7 +30,7 @@ if not SECRET_KEY:
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['adore272.pythonanywhere.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['foodie-app-nmct.onrender.com', 'adore272.pythonanywhere.com', '127.0.0.1', 'localhost']
 
 URL_ADMIN = os.getenv('URL_ADMIN', 'admin/')
 
