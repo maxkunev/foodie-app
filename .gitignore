@@ -19,3 +19,9 @@ staticfiles/
 static/*
 !static/images/
 !static/js/
+
+# Data
+
+data.json
+prod_data.json
+*.sqlite3
