@@ -38,8 +38,6 @@ URL_ADMIN = os.getenv('URL_ADMIN', 'admin/')
 
 INSTALLED_APPS = [
     #my apps
-    'cloudinary_storage',
-    'cloudinary',
     'foodie_app',
     'recipes',
     'comments',
@@ -52,7 +50,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework'
+    'rest_framework',
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
