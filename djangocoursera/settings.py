@@ -38,6 +38,8 @@ URL_ADMIN = os.getenv('URL_ADMIN', 'admin/')
 
 INSTALLED_APPS = [
     #my apps
+    'cloudinary_storage',
+    'cloudinary',
     'foodie_app',
     'recipes',
     'comments',
@@ -173,3 +175,11 @@ CACHES = {
         'LOCATION': 'category_cache_table'
     }
 }
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
