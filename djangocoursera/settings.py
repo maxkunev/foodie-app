@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'comments',
     'accounts',
     'django_bootstrap5',
+    'drf_spectacular',
     #efault apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -196,3 +197,16 @@ STORAGES = {
 
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
+REST_FRAMEWORK = {
+    # YOUR SETTINGS
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Foodie-app API',
+    'DESCRIPTION': 'Recipes for everyone',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}
