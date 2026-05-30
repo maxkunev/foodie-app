@@ -4,7 +4,10 @@ from django.shortcuts import HttpResponse
 from django.core.paginator import Paginator
 from django.urls import reverse
 
+from recipes.permissions import AuthorOrNotAccessPermission
 from recipes.serializers import RecipeReadSerializer, RecipeWriteSerializer
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+
 from recipes.utils import get_pagination
 # Create your views here.
 from .models import Recipe
@@ -245,6 +248,8 @@ def public_profile(request, user_id):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
+    
+    permission_classes = [IsAuthenticatedOrReadOnly, AuthorOrNotAccessPermission]
     
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:

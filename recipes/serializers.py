@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from .models import Recipe
 from foodie_app.models import Category
 
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -15,6 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["id", "username"]
 
 class RecipeReadSerializer(serializers.ModelSerializer):
+    
     user = UserSerializer(read_only=True)
     category = CategorySerializer(read_only=True)
     favorited_by = UserSerializer(read_only=True, many=True)
