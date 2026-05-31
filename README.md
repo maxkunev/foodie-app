@@ -61,56 +61,79 @@ media/              # User-uploaded media
 
 ## ⚙️ Installation & Setup
 
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/maxkunev/foodie-app.git
-cd foodie-app
-```
-
-### 2. Create a virtual environment
-
-```bash
-python -m venv venv
-source venv/bin/activate   # Linux / macOS
-venv\Scripts\activate      # Windows
-```
-
-### 3. Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Apply migrations
-
-```bash
-python manage.py migrate
-```
-
-### 5. Run the development server
-
-```bash
-python manage.py runserver
-```
-
-### 6. Open in browser
-
-- http://127.0.0.1:8000/
-
-> For Docker-based setup, see `docker-compose.yml` in the repository root.
+You can run this project using **Docker** (Recommended) or locally using a virtual environment.
 
 ***
 
-## 📌 Improvements Roadmap
+### Option A: Docker (Recommended)
 
-- [x] Likes system (HTMX-powered)
-- [x] Advanced search, sorting, and category filtering
-- [x] REST API (Django REST Framework + drf-spectacular)
-- [x] Deployed on Render.com (managed environment)
-- [ ] ~~Bare Linux server setup (Nginx, Gunicorn, PostgreSQL)~~ — *decided to use a managed platform (Render) instead, which handles infrastructure concerns*
-- [x] Containerization with Docker
-- [ ] CI/CD pipeline — *not implemented; considered out of scope for current stage*
+This is the easiest way to run the project with the PostgreSQL database and Gunicorn server included.
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/maxkunev/foodie-app.git
+   cd foodie-app
+   ```
+
+2. **Set up environment variables:**
+   Create a `.env` file in the root directory (you can use `.env.example` as a reference if available) and add your database credentials.
+
+3. **Build and run the containers:**
+   ```bash
+   docker compose up --build -d
+   ```
+
+4. **Apply migrations and create an admin user:**
+   ```bash
+   docker compose exec web python manage.py migrate
+   docker compose exec web python manage.py createsuperuser
+   ```
+
+5. **Open in browser:** [http://localhost:8000/](http://localhost:8000/)
+
+***
+
+### Option B: Local Virtual Environment
+
+If you prefer running the app without Docker (using SQLite by default).
+
+1. Clone the repository and navigate to the project folder.
+
+2. **Create and activate a virtual environment:**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate   # Linux / macOS
+   venv\Scripts\activate      # Windows
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Apply migrations:**
+   ```bash
+   python manage.py migrate
+   ```
+
+5. **Run the server:**
+   ```bash
+   python manage.py runserver
+   ```
+
+***
+
+## 📌 Development Roadmap & Status
+
+Instead of standard checkboxes, here is the evolution of the project's architecture:
+
+- ✅ **Dynamic UI** — Implemented HTMX-powered likes and favourites system.
+- ✅ **Advanced Querying** — Added search, sorting, and category filtering.
+- ✅ **REST API** — Built with Django REST Framework + drf-spectacular.
+- ✅ **Containerization** — Fully containerized with Docker, Gunicorn, and PostgreSQL.
+- ✅ **Deployment** — Successfully deployed on a managed PaaS ([Render.com](https://foodie-app-nmct.onrender.com/)).
+- 📍 **Architecture Pivot** — Initially planned to manually configure a bare metal Linux server with Nginx. However, shifted to a modern containerized PaaS deployment (Docker + Render + WhiteNoise) to focus on scalable, immutable infrastructure.
+- 🔄 **CI/CD Pipeline** — Planned for future iterations (e.g., GitHub Actions).
 
 ***
 
