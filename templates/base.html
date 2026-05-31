@@ -12,7 +12,7 @@
     {% bootstrap_javascript %}
 </head>
 
-<body>
+<body data-bs-theme={% if request.user.profile.theme_preference %} "dark" {% else %} "light" {% endif %}>
 
 <style>
     .alert-test-message{
@@ -27,6 +27,11 @@
         background-color: #772ce8;
         border-color: #772ce8;
         color: white;
+    }
+    .btn-width-theme{
+        width: 40px; 
+        height: 40px;
+        border-width: 2px;
     }
 </style>
 
@@ -55,7 +60,7 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url "foodie_app:foodie_app_home" %}">Foodie</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav w-100 d-flex">
@@ -72,7 +77,7 @@
                     <li class="nav-item ms-lg-auto">
                         <form class="d-flex" action="{% url "recipes:search_results" %}" method="get">
                             {{ search_form.query }}
-                            <button type="submit" class="btn btn-outline-success my-2 my-sm-0">
+                            <button type="submit" class="btn btn-outline-success my-2 my-sm-0 ms-2">
                                 search
                             </button>
                         </form>
@@ -81,6 +86,23 @@
                             <button class="btn btn-twitch btn-sm text-white d-flex align-items-center px-2 h-100">
                                 <a class="text-white text-decoration-none fs-6" href={% url "recipes:favorite_recipes" %}>★My favorite</a>
                             </button>
+                    </li>
+                    <li class="nav-item mt-2 mt-lg-0 ms-lg-2">
+                        <form action="{% url "accounts:toggle_theme" %}" method="post" class="d-flex" hx-boost="true">
+                            {% csrf_token %}
+                            <button
+                                type="submit"
+                                class="btn btn-outline-dark btn-sm d-flex align-items-center justify-content-center fw-bold btn-width-theme text-body"
+                                aria-label="Toggle theme">
+                                {% if request.user.profile.theme_preference %}
+                                    L
+                                {% else %}
+                                    <span class="text-secondary">
+                                        D
+                                    </span>
+                                {% endif %}
+                            </button>
+                        </form>
                     </li>
                     <li class="nav-item">
                         <span class="nav-link">Hello, {% if request.user.profile.profile_photo %} 
@@ -106,7 +128,7 @@
                         <div>
                             <form action="{% url "accounts:logout" %}" method="post" class="d-flex">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-outline-dark btn-sm">Logout</button>
+                                <button type="submit" class="btn btn-outline-dark btn-sm text-body">Logout</button>
                             </form>
                         </div>
                 {% endif %}
