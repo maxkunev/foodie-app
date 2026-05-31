@@ -18,7 +18,7 @@ A Django-based web application for managing and exploring recipes, featuring bro
 - User registration and authentication
 - Profile photo upload
 - Improved form validation
-- ❤️ Likes / favourites system powered by HTMX
+- ❤️ Likes / favourites system powered by HTMX/AJAX-request
 - Persistent dark mode toggle for authenticated users
 - In-memory caching for search and filtering results
 - REST API with auto-generated documentation (DRF + drf-spectacular)
