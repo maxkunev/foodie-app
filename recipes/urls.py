@@ -19,5 +19,6 @@ urlpatterns = [
     path('my_recipes/', views.my_recipes, name="my_recipes"),
     path('profile/<int:user_id>/', views.public_profile, name = 'public_profile'),
     path('api/', include(router.urls)),
-    path('<int:recipe_id>/toggle_liked/', views.toggle_liked, name="toggle_liked")
+    path('<int:recipe_id>/toggle_liked/', views.toggle_liked, name="toggle_liked"),
+    path('health_check/', views.health_check, name='health_check')
 ]
